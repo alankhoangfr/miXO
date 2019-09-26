@@ -1,0 +1,19 @@
+To go to production
+1. Go into the client folder and do npm run build
+2. In the server.js
+		a. change the port to 8080
+		b.app.use(express.static('client/build'));
+		c. app.get('*', (req, res) => {
+			res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+			});
+3. In the dbpool.js
+		a.change the script from development to production
+
+4. go to the gcloud sdk google shell and make sure you have logged in
+5. In the folder directory do gcloud app deploy
+
+To do
+
+- use ref for all input 
+-have the ability to choose paided during the order
+the image gallery needs to show a bigger image or at least the complete image
