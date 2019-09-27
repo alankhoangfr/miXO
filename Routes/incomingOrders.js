@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require("../dbpool")
 
 router.get('/all', (req, res) => {
-    let sql = 'SELECT * FROM IncomingOrders WHERE NOT STATUS = "Complete"';
+    let sql = 'SELECT * FROM IncomingOrders WHERE NOT status = "Complete" or not paymentStatus = "Completely Paid"';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -13,9 +13,10 @@ router.get('/all', (req, res) => {
 router.put('/statusComment', (req, res) => {
     console.log("update",req.body)
     let sql = 'UPDATE IncomingOrders SET ? WHERE ?'
-    let query = pool.query(sql, [{ "comment": req.body.comment,"status":req.body.status }, { "idIncomingOrders": req.body.idIncomingOrders }], (err, results) => {
-        if(err) throw err;
-        res.send(results);
+    let query = pool.query(sql, [{ "comment": req.body.comment,"status":req.body.status,"paymentStatus":req.body.paymentStatus,"payDate":req.body.payDate,
+        "paid":req.body.paid  }, { "idIncomingOrders": req.body.idIncomingOrders}], (err, results) => {
+            if(err) throw err;
+            res.send(results);
     });
 });
 router.post('/new', (req, res) => {

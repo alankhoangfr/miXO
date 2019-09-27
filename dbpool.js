@@ -3,7 +3,7 @@ const mysql = require('mysql')
 
 
 // Database Connection for Development
-/*
+
 require('dotenv').config()
 
 const pool = mysql.createPool({
@@ -33,8 +33,8 @@ pool.getConnection((err, connection) => {
 	return
 })
 
-*/
 
+/*
 //for production
 var config = {
     user: process.env.SQL_USER,
@@ -59,6 +59,6 @@ pool.connect(function(err) {
 
 
 //
-
+*/
 
 module.exports = pool
