@@ -8,6 +8,8 @@ const fileUpload = require('express-fileupload');
 const app = express()
 
 const customers = require("./Routes/customers")
+const expenses = require("./Routes/expenses")
+const category = require("./Routes/category")
 const variantCode = require("./Routes/variantCode")
 const parentProduct = require("./Routes/parentProduct")
 const variantProduct = require("./Routes/variantProduct")
@@ -30,6 +32,8 @@ app.use(fileUpload());
 
 
 app.use("/api/customers",customers)
+app.use("/api/expenses",expenses)
+app.use("/api/category",category)
 app.use("/api/variantCode",variantCode)
 app.use("/api/parentProduct",parentProduct)
 app.use("/api/variantProduct",variantProduct)
@@ -46,8 +50,8 @@ app.use("/api/incomingOrderProduct",incomingOrderProduct)
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
 	});
-
 */
+
 
 const PORT = process.env.PORT || 5000;
 

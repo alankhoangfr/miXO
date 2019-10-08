@@ -39,7 +39,7 @@ router.put('/updateWithImage', (req, res) => {
         info["productImage"]=req.files.productImage.data    
     }
     let sql = `UPDATE VariantProduct SET ?
-     WHERE sku=${`"${req.body.sku}"`}`
+    WHERE sku=${`"${req.body.sku}"`}`
     let query = pool.query(sql, info,(err, results) => {
             if(err) throw err;
             res.send(results);

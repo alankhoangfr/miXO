@@ -15,5 +15,4 @@ To go to production
 To do
 
 - use ref for all input 
--have the ability to choose paided during the order
-the image gallery needs to show a bigger image or at least the complete image
+The comment in the gallery takes forever.... lots of lag. It doesnt affect the order gallery. Probably due to the large size of images

@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require("../dbpool")
 
 router.get('/all', (req, res) => {
-    let sql = 'SELECT * FROM IncomingOrders WHERE NOT status = "Complete" or not paymentStatus = "Completely Paid"';
+    let sql = 'SELECT * FROM IncomingOrders WHERE NOT status = "Complete" or not paymentStatus = "Completely Paid" or paymentStatus is null';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
