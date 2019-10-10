@@ -16,3 +16,4 @@ To do
 
 - use ref for all input 
 The comment in the gallery takes forever.... lots of lag. It doesnt affect the order gallery. Probably due to the large size of images
+put a overlay spinner until all data has been loaded or do a retrigger of the button 
