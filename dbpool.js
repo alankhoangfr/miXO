@@ -14,9 +14,9 @@ const pool = mysql.createPool({
   database: process.env.DB_DATABASE_LOCAL,
   password: process.env.DB_PASS_LOCAL
 });
+*/
 
-/*
-Google SQL
+//Google SQL
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -42,7 +42,7 @@ pool.getConnection((err, connection) => {
 	return
 })
 
-*/
+/*
 
 //for production
 var config = {
@@ -66,7 +66,7 @@ pool.connect(function(err) {
   console.log('connected as id ' + pool.threadId);
 });
 
-
+*/
 //
 
 

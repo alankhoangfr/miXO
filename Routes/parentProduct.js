@@ -44,7 +44,7 @@ router.get('/all', (req, res) => {
                     else "image"
                 end
                 as productImageBinary
-                 FROM ParentProduct`
+                 FROM parentproduct`
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -53,7 +53,7 @@ router.get('/all', (req, res) => {
 
 router.get('/productImage/:idParentProduct', (req, res) => {
     console.log(req.params.idParentProduct)
-    let sql = `SELECT productImage FROM ParentProduct where idParentProduct=${`"${req.params.idParentProduct}"`}`;
+    let sql = `SELECT productImage FROM parentproduct where idParentProduct=${`"${req.params.idParentProduct}"`}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -61,7 +61,7 @@ router.get('/productImage/:idParentProduct', (req, res) => {
 });
 
 router.get('/productName', (req, res) => {
-    let sql = `SELECT productName FROM ParentProduct` ;
+    let sql = `SELECT productName FROM parentproduct` ;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -70,7 +70,7 @@ router.get('/productName', (req, res) => {
 
     
 router.get('/getInfo/:productName', (req, res) => {
-    let sql = `SELECT * FROM ParentProduct WHERE productName = ${`"${req.params.productName}"`}`;
+    let sql = `SELECT * FROM parentproduct WHERE productName = ${`"${req.params.productName}"`}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -78,7 +78,7 @@ router.get('/getInfo/:productName', (req, res) => {
 });
 
 router.get('/getInfoIpp/:ipp', (req, res) => {
-    let sql = `SELECT * FROM ParentProduct WHERE idParentProduct = ${req.params.ipp}`;
+    let sql = `SELECT * FROM parentproduct WHERE idParentProduct = ${req.params.ipp}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -91,7 +91,7 @@ router.get('/getInfoIpp/:ipp', (req, res) => {
 router.post("/newMulter", upload, (req,res)=>{
     let info = req.body    
     info["productImage"]=req.file.path
-    let sql = "INSERT INTO ParentProduct set?"
+    let sql = "INSERT INTO parentproduct set?"
     let query = pool.query(sql,info,(err,results)=>{
         if (err) throw err
         res.send(results)
@@ -105,7 +105,7 @@ router.post("/new", (req,res)=>{
         info["productImage"]=req.files.productImage.data    
     }
     console.log(info["productImage"])
-    let sql = "INSERT INTO ParentProduct set?"
+    let sql = "INSERT INTO parentproduct set?"
     let query = pool.query(sql,info,(err,results)=>{
         if (err) throw err
         res.send(results)
@@ -114,10 +114,10 @@ router.post("/new", (req,res)=>{
 router.post("/fromIncoming",(req,res)=>{
     console.log(req.body)
     let info = req.body  
-    let sql = `INSERT INTO ParentProduct(productName, category, subCategory, idSuppliers, wholeSalePrice, basePrice, dateCreated, productImage) 
+    let sql = `INSERT INTO parentproduct(productName, category, subCategory, idSuppliers, wholeSalePrice, basePrice, dateCreated, productImage) 
         SELECT ${`"${info.productName}"`} , category, subCategory,  ${`"${info.idSuppliers}"`}, 
             wholeSalePrice, retailPrice, ${`"${info.dateCreated}"`}, productImage
-        FROM IncomingOrderProducts 
+        FROM incomingorderproducts 
         where idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
     let query = pool.query(sql,(err,results)=>{
       if(err) throw err
@@ -125,7 +125,7 @@ router.post("/fromIncoming",(req,res)=>{
     })
 })
 router.put("/changeImage", (req,res)=>{
-    let sql = `UPDATE ParentProduct SET ? WHERE ?`
+    let sql = `UPDATE parentproduct SET ? WHERE ?`
     let query = pool.query(sql,[{"productImage":req.files.productImage.data}, {"idParentProduct": req.body.idParentProduct}],
         (err,results)=>{
         if (err) throw err

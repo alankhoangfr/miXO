@@ -55,19 +55,20 @@ CREATE TABLE `VariantCode` (
   UNIQUE KEY `idVariantCode_UNIQUE` (`idVariantCode`)
 );
 
-CREATE TABLE `Orders` (
+CREATE TABLE `orders` (
   `idOrders` varchar(250) NOT NULL,
   `orderDate` date DEFAULT NULL,
   `customerId` int(11) NOT NULL,
   `totalBasePrice` decimal(10,2) DEFAULT NULL,
   `reduction` decimal(10,2) DEFAULT NULL,
-  `totalPaid` decimal(10,2) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `comment` longtext,
+  `paid` decimal(10,2) DEFAULT NULL,
   `payDate` date DEFAULT NULL,
   `paymentStatus` varchar(45) DEFAULT NULL,
-  `comment` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`idOrders`),
   KEY `order_customer` (`customerId`),
-  CONSTRAINT `order_customer` FOREIGN KEY (`customerId`) REFERENCES `Customers` (`customerId`)
+  CONSTRAINT `order_customer` FOREIGN KEY (`customerId`) REFERENCES `customers` (`customerId`)
 );
 
 CREATE TABLE `Suppliers` (
@@ -117,7 +118,7 @@ CREATE TABLE `VariantProduct` (
   KEY `VP_ParentID` (`idParentProduct`),
   CONSTRAINT `VP_ParentID` FOREIGN KEY (`idParentProduct`) REFERENCES `ParentProduct` (`idParentProduct`)
 );
-CREATE TABLE `IncomingOrders` (
+CREATE TABLE `incomingOrders` (
   `idIncomingOrders` varchar(250) NOT NULL,
   `supplierOrderNumber` varchar(250) NOT NULL,
   `orderDate` date DEFAULT NULL,
@@ -132,23 +133,23 @@ CREATE TABLE `IncomingOrders` (
   PRIMARY KEY (`idIncomingOrders`),
   KEY `IncomingOrders_suppliers` (`idSuppliers`),
   CONSTRAINT `IncomingOrders_suppliers` FOREIGN KEY (`idSuppliers`) REFERENCES `Suppliers` (`idSuppliers`)
-)
+);
 
-CREATE TABLE `Order_Details` (
+CREATE TABLE `order_details` (
   `idOrder_Details` int(11) NOT NULL AUTO_INCREMENT,
   `idOrders` varchar(250) NOT NULL,
   `sku` varchar(250) NOT NULL,
   `quantity` int(11) DEFAULT NULL,
   `priceEach` decimal(10,2) DEFAULT NULL,
-  `status` varchar(45) DEFAULT NULL,
+  `status` varchar(45)  DEFAULT NULL,
   `comment` varchar(250) DEFAULT NULL,
+  `arrivedToday` int(11) DEFAULT NULL,
   PRIMARY KEY (`idOrder_Details`),
   KEY `orderDetails_SKU` (`sku`),
   KEY `orderDetails_order` (`idOrders`),
-  CONSTRAINT `orderDetails_SKU` FOREIGN KEY (`sku`) REFERENCES `VariantProduct` (`sku`),
-  CONSTRAINT `orderDetails_order` FOREIGN KEY (`idOrders`) REFERENCES `Orders` (`idOrders`)
-) 
-
+  CONSTRAINT `orderDetails_SKU` FOREIGN KEY (`sku`) REFERENCES `variantproduct` (`sku`),
+  CONSTRAINT `orderDetails_order` FOREIGN KEY (`idOrders`) REFERENCES `orders` (`idOrders`)
+);
 
 
 
