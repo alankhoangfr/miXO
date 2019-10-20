@@ -26,6 +26,7 @@ Also go to console
 ->gcloud config set account mixographics@gmail.com
 ->gcloud projects list
 ->gcloud config set project mixov2	
+
 then update the app.yaml
 
 app.yaml with alankhoangfr@gmail.com
