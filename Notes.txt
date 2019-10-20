@@ -19,13 +19,29 @@ To do
 
 
 Also go to console
--->Gcloud auth login
--->Login into alankhoangfr@gmail.com
+Create an gmail acccount
+Create a project in google cloud platform
+create an instance in google app engine
 
-->gcloud auth list
-->gcloud config set account mixographics@gmail.com
-->gcloud projects list
-->gcloud config set project mixov2	
+-->gcloud init
+then login and choose the project
+
+
+
+Create the instance in googleSql
+-remember the instance name must all be lower case and no characters
+
+In the google cloud platform of the project, enable app for Cloud SQL Admin API
+
+perform these instruction
+
+Go to the IAM & admin Service accounts page.
+Select the project that has your App Engine application.
+Find App Engine default service account and copy the email address under it (xxxx@appspot.gserviceaccount.com).
+Using the top-left project menu, return to the project that contains this SQL instance (mixov2).
+Go to the IAM & admin IAM page.
+Click Add, enter the email address as the member, and choose Cloud SQL Client as the role. Then click Add.
+
 
 then update the app.yaml
 
@@ -36,7 +52,7 @@ env: flex
 env_variables:
   SQL_USER: "Akleg"
   SQL_PASSWORD: "alan123456"
-  SQL_DATABASE: "database"
+  SQL_DATABASE: "database" //db name must be lower case and no characters
   INSTANCE_CONNECTION_NAME: "mixov1:europe-west3:mixodatabase"
 beta_settings:
   cloud_sql_instances: "mixov1:europe-west3:mixodatabase"

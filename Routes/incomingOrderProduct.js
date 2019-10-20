@@ -22,7 +22,7 @@ router.put('/statusComment', (req, res) => {
     const info = req.body
     let sql = 'UPDATE incomingorderproducts  SET ? WHERE ?'
     let query = pool.query(sql,
-        [{ "comment": info.comment,"status":info.status,"quantity":info.quantity,"wholeSalePrice":info.wholeSalePrice,
+        [{ "comment": info.comment,"statusQuantity":info.statusQuantity,"quantity":info.quantity,"wholeSalePrice":info.wholeSalePrice,
         "retailPrice":info.retailPrice,arrivedToday:info.arrivedToday}
             , { "idIncomingOrderProducts": info.idIncomingOrderProducts }], (err, results) => {
         if(err) throw err;

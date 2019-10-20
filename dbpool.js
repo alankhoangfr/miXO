@@ -6,7 +6,7 @@ const mysql = require('mysql')
 
 require('dotenv').config()
 
-/*
+
 //Local
 const pool = mysql.createPool({
   host: process.env.DB_HOST_LOCAL,
@@ -14,8 +14,8 @@ const pool = mysql.createPool({
   database: process.env.DB_DATABASE_LOCAL,
   password: process.env.DB_PASS_LOCAL
 });
-*/
 
+/*
 //Google SQL
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -23,7 +23,9 @@ const pool = mysql.createPool({
   database: process.env.DB_DATABASE,
   password: process.env.DB_PASS
 });
+*/
 
+//Production
 pool.getConnection((err, connection) => {
 	if (err) {
 		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -41,9 +43,10 @@ pool.getConnection((err, connection) => {
 		connection.release()}
 	return
 })
+//
+
 
 /*
-
 //for production
 var config = {
     user: process.env.SQL_USER,
@@ -66,8 +69,8 @@ pool.connect(function(err) {
   console.log('connected as id ' + pool.threadId);
 });
 
-*/
-//
 
+//
+*/
 
 module.exports = pool

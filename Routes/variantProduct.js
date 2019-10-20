@@ -4,7 +4,7 @@ const pool = require("../dbpool")
 
 router.get('/all', (req, res) => {
     let sql = `SELECT PP.productName,VP.idProducts, VP.sku, VP.idParentProduct, VP.size, VP.colour, VP.quantityInStock, VP.productDescription, 
-    VP.wholeSalePrice, VP.priceAdjustment, VP.dateCreated, PP.category,PP.subCategory ,
+    VP.wholeSalePrice, VP.priceAdjustment, VP.dateCreated, VP.accumulation,PP.category,PP.subCategory ,
     case
         when (VP.productImage is Null) then null
         else "Image"
@@ -60,9 +60,9 @@ router.post("/new", (req,res)=>{
 router.post("/fromIncoming",(req,res)=>{
     let info = req.body  
     let sql = `INSERT INTO variantproduct(sku, idParentProduct, size, colour, quantityInStock,
-     productDescription, wholeSalePrice, priceAdjustment, dateCreated, productImage)
+     productDescription, wholeSalePrice, priceAdjustment, dateCreated, productImage,accumulation)
      SELECT ${`"${info.sku}"`} , ${`"${info.idParentProduct}"`},size, colour, status ,productDescription, 
-     wholeSalePrice, retailPrice,${`"${info.dateCreated}"`}, productImage FROM IncomingOrderProducts 
+     wholeSalePrice, retailPrice,${`"${info.dateCreated}"`}, productImage, ${`"${info.accumulation}"`} FROM IncomingOrderProducts
      where idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
     let query = pool.query(sql,(err,results)=>{
       if(err) throw err

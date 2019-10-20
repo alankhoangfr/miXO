@@ -3,7 +3,14 @@ const router = express.Router()
 const pool = require("../dbpool")
 
 router.get('/all', (req, res) => {
-    let sql = 'SELECT * FROM incomingorders WHERE NOT status = "Complete" or not paymentStatus = "Completely Paid" or paymentStatus is null';
+    let sql =
+       `SELECT * , sum(iop.quantity) as totalQuantity, sum(iop.statusQuantity) as totalStatusQuantity
+        FROM incomingorders iord
+        right join incomingorderproducts iop
+        on  iord.idIncomingOrders=iop.idIncomingOrders
+        WHERE NOT status = "Complete" 
+        or not paymentStatus = "Completely Paid" 
+        or paymentStatus is null`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
