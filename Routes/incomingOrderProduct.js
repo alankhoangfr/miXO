@@ -4,10 +4,13 @@ const pool = require("../dbpool")
  
 
 router.get('/all', (req, res) => {
-        let sql = `SELECT IOP.*,PP.productName, iorder.supplierOrderNumber,iorder.orderDate FROM IncomingOrderProducts IOP 
+        let sql = `
+        SELECT IOP.*,PP.productName, iorder.supplierOrderNumber,iorder.orderDate,VP.quantityInStock
+        FROM IncomingOrderProducts IOP 
         LEFT JOIN  IncomingOrders iorder ON IOP.idIncomingOrders=iorder.idIncomingOrders
-         Left join ParentProduct PP  on IOP.predictedParentId=PP.idParentProduct 
-         where not  iorder.status  ="Complete" `
+        left Join VariantProduct VP ON IOP.sku = VP.SKU 
+        Left join ParentProduct PP  on IOP.predictedParentId=PP.idParentProduct 
+        where not  iorder.status  ="Complete" `
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
@@ -16,8 +19,12 @@ router.get('/all', (req, res) => {
 
 router.put('/statusComment', (req, res) => {
     console.log("update",req.body)
+    const info = req.body
     let sql = 'UPDATE IncomingOrderProducts SET ? WHERE ?'
-    let query = pool.query(sql, [{ "comment": req.body.comment,"status":req.body.status }, { "idIncomingOrderProducts": req.body.idIncomingOrderProducts }], (err, results) => {
+    let query = pool.query(sql,
+        [{ "comment": info.comment,"status":info.status,"quantity":info.quantity,"wholeSalePrice":info.wholeSalePrice,
+        "retailPrice":info.retailPrice,arrivedToday:info.arrivedToday}
+            , { "idIncomingOrderProducts": info.idIncomingOrderProducts }], (err, results) => {
         if(err) throw err;
         res.send(results);
     });     

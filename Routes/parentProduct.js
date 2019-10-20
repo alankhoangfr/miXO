@@ -70,7 +70,6 @@ router.get('/productName', (req, res) => {
 
     
 router.get('/getInfo/:productName', (req, res) => {
-
     let sql = `SELECT * FROM ParentProduct WHERE productName = ${`"${req.params.productName}"`}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
@@ -113,8 +112,13 @@ router.post("/new", (req,res)=>{
     })
 })
 router.post("/fromIncoming",(req,res)=>{
+    console.log(req.body)
     let info = req.body  
-    let sql = `INSERT INTO ParentProduct(productName, category, subCategory, idSuppliers, wholeSalePrice, basePrice, dateCreated, productImage) SELECT ${`"${info.productName}"`} , category, subCategory,  ${`"${info.idSuppliers}"`}, wholeSalePrice, retailPrice, ${`"${info.dateCreated}"`}, productImage FROM IncomingOrderProducts where idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
+    let sql = `INSERT INTO ParentProduct(productName, category, subCategory, idSuppliers, wholeSalePrice, basePrice, dateCreated, productImage) 
+        SELECT ${`"${info.productName}"`} , category, subCategory,  ${`"${info.idSuppliers}"`}, 
+            wholeSalePrice, retailPrice, ${`"${info.dateCreated}"`}, productImage
+        FROM IncomingOrderProducts 
+        where idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
     let query = pool.query(sql,(err,results)=>{
       if(err) throw err
       res.send(results)

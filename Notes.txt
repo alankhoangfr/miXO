@@ -14,6 +14,46 @@ To go to production
 
 To do
 
-- use ref for all input 
-The comment in the gallery takes forever.... lots of lag. It doesnt affect the order gallery. Probably due to the large size of images
-put a overlay spinner until all data has been loaded or do a retrigger of the button 
+- use ref for all input - look at cardItem.js 
+
+
+
+Also go to console
+-->Gcloud auth login
+-->Login into alankhoangfr@gmail.com
+
+->gcloud auth list
+->gcloud config set account mixographics@gmail.com
+->gcloud projects list
+->gcloud config set project mixov2	
+then update the app.yaml
+
+app.yaml with alankhoangfr@gmail.com
+
+runtime: nodejs
+env: flex
+env_variables:
+  SQL_USER: "Akleg"
+  SQL_PASSWORD: "alan123456"
+  SQL_DATABASE: "database"
+  INSTANCE_CONNECTION_NAME: "mixov1:europe-west3:mixodatabase"
+beta_settings:
+  cloud_sql_instances: "mixov1:europe-west3:mixodatabase"
+
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: .5
+  memory_gb: 0.5
+  disk_size_gb: 10
+
+handlers:
+  - url: /
+    static_files: client/build/index.html
+    upload: client/build/index.html
+  - url: /
+    static_dir: client/build
+
+  Then 
+  -->gcloud app deploy
