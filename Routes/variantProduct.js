@@ -61,8 +61,8 @@ router.post("/fromIncoming",(req,res)=>{
     let info = req.body  
     let sql = `INSERT INTO variantproduct(sku, idParentProduct, size, colour, quantityInStock,
      productDescription, wholeSalePrice, priceAdjustment, dateCreated, productImage,accumulation)
-     SELECT ${`"${info.sku}"`} , ${`"${info.idParentProduct}"`},size, colour, status ,productDescription, 
-     wholeSalePrice, retailPrice,${`"${info.dateCreated}"`}, productImage, ${`"${info.accumulation}"`} FROM IncomingOrderProducts
+     SELECT ${`"${info.sku}"`} , ${`"${info.idParentProduct}"`},size, colour, statusQuantity ,productDescription, 
+     wholeSalePrice, retailPrice,${`"${info.dateCreated}"`}, productImage, ${`"${info.accumulation}"`} FROM incomingorderproducts
      where idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
     let query = pool.query(sql,(err,results)=>{
       if(err) throw err

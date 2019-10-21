@@ -11,7 +11,8 @@ router.get('/all', (req, res) => {
         WHERE NOT status = "Complete" 
         or not paymentStatus = "Completely Paid" 
         or paymentStatus is null
-        group by iop.idIncomingOrders`;
+        group by iord.idIncomingOrders, iord.supplierOrderNumber, iord.orderDate, iord.idSuppliers, iord.totalAmount, 
+        iord.supplierDiscount, iord.status, iord.comment, iord.paymentStatus, iord.paid, iord.payDate`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
