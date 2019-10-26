@@ -19,11 +19,11 @@ router.post('/new', (req, res) => {
 });
 
 router.put('/update', (req, res) => {
-    let sql = 'UPDATE expenses SET ? WHERE ?'
+    let sql = `UPDATE expenses SET ? WHERE ?`
     let query = pool.query(sql, [{ "comment": req.body.comment,"paymentStatus":req.body.paymentStatus,"payDate":req.body.payDate,
-        "paid":req.body.paid  }, { "idexpenses": req.body.idexpenses}], (err, results) => {
+        "paid":req.body.paid,"currency":req.body.currency }, { "idExpenses": req.body.idExpenses}], (err, results) => {
             if(err) throw err;
-            res.send(results);
+            res.send(results)
     });
 });
 

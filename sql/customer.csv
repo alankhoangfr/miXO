@@ -1,0 +1,26 @@
+customerId,facebookId,firstName,lastName,gender,dateCreated,address1,address2,city,postcode,country,telephone,email,Birthday
+1,12,Alan,Hoang,Male,2019-10-15,12,NULL,Penrith,2750,Australia,6124736106,,
+2,2415170455379140,Nguy?n,H??ng,Female,2019-10-22,NULL,NULL, Ho Chi Minh City,NULL,Vietnam,NULL,,17-Jul
+3,353181678959993,Dìa ,Dìa,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+4,416703922498952,Ng?c Giàuu,Nguy?n,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,ngiau164@gmail.com,22-Nov
+5,2692310120801230,Thanh ,Huy?n,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+6,153145455799943, Th? Thanh H?ng,Võ,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+7,1042054355962440,Tea ,Anh,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+8,585185805220159,Thanh ,Nhàn,Female,2019-10-22,NULL,NULL,Nha Trang,NULL,Vietnam,NULL,,01-Jun
+9,1391703204321170,Ng?c Châu,Bùi ,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+10,,Tiên ,Lê,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+11,143941333475920,My ,My,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+12,1451642701634080,H??ng ?ào,Nguy?n,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,06-May
+13,157299471994657,Hoa ,Nguyen,Female,2019-10-22,NULL,NULL,,NULL,Vietnam,NULL,,
+14,2411439138974680,Ph??ng Th?o,Tr?nh ,Female,2019-10-22,NULL,NULL,Hanoi,NULL,Vietnam,NULL,,
+15,401633933758191,Trang,Huy?n ,Female,2019-10-22,NULL,NULL,Da Lat,NULL,Vietnam,NULL,,
+16,,,,Female,,,,,,Vietnam,,,
+17,,,,Female,,,,,,Vietnam,,,
+18,,,,Female,,,,,,Vietnam,,,
+19,,,,Female,,,,,,Vietnam,,,
+20,,,,Female,,,,,,Vietnam,,,
+21,,,,Female,,,,,,Vietnam,,,
+22,,,,Female,,,,,,Vietnam,,,
+23,,,,Female,,,,,,Vietnam,,,
+24,,,,Female,,,,,,Vietnam,,,
+,,,,,,,,,,Vietnam,,,

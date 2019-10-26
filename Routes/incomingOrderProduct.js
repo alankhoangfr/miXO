@@ -5,7 +5,7 @@ const pool = require("../dbpool")
 
 router.get('/all', (req, res) => {
         let sql = `
-        SELECT IOP.*,PP.productName, iorder.supplierOrderNumber,iorder.orderDate,VP.quantityInStock
+        SELECT IOP.*,PP.productName, iorder.supplierOrderNumber,iorder.orderDate,VP.quantityInStock,VP.accumulation
         FROM incomingorderproducts  IOP 
         LEFT JOIN  incomingorders iorder ON IOP.idIncomingOrders=iorder.idIncomingOrders
         left Join variantproduct VP ON IOP.sku = VP.SKU 

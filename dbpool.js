@@ -15,7 +15,6 @@ const pool = mysql.createPool({
   password: process.env.DB_PASS_LOCAL
 });
 */
-
 /*
 //Google SQL
 const pool = mysql.createPool({
@@ -25,8 +24,9 @@ const pool = mysql.createPool({
   password: process.env.DB_PASS
 });
 */
-/*
+
 //Development
+/*
 pool.getConnection((err, connection) => {
 	if (err) {
 		if (err.code === 'PROTOCOL_CONNECTION_LOST') {

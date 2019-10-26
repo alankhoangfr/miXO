@@ -19,11 +19,19 @@ router.get('/allIdName', (req, res) => {
 });
 
 router.post('/new', (req, res) => {
-	console.log(req.body)
+
     let sql = "INSERT INTO suppliers set ?"
     let query = pool.query(sql, req.body ,(err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
+
+router.put('/update',(req,res)=>{
+    let sql = `Update suppliers SET ? where idSuppliers= ${req.body.id.idSuppliers}`
+    let query = pool.query(sql, req.body.info ,(err, results) => {
+        if(err) throw err;
+        res.send(results);
+    });
+})
 module.exports =router
