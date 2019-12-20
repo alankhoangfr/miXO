@@ -1,30 +1,31 @@
 const express = require("express")
 const router = express.Router()
 const pool = require("../dbpool")
+const auth = require('../middleware/auth')
 
-router.get('/all', (req, res) => {
+router.get('/all', auth,(req, res) => {
     let sql = 'SELECT * FROM customers';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
-router.get('/facebookId', (req, res) => {
+router.get('/facebookId', auth,(req, res) => {
     let sql = 'SELECT facebookId FROM customers';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
-router.get('/customerId', (req, res) => {
+router.get('/customerId', auth,(req, res) => {
     let sql = 'SELECT customerId FROM customers';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
-router.post('/new', (req, res) => {
-	console.log(req.body)
+router.post('/new', auth,(req, res) => {
+	console.logauth,(req.body)
     let sql = "INSERT INTO customers set ?"
     let query = pool.query(sql, req.body ,(err, results) => {
         if(err) throw err;
@@ -32,7 +33,7 @@ router.post('/new', (req, res) => {
     });
 });
 
-router.get('/fbcust', (req, res) => {
+router.get('/fbcust', auth,(req, res) => {
     let sql = 'SELECT customerId,facebookId FROM customers';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
@@ -40,26 +41,27 @@ router.get('/fbcust', (req, res) => {
     });
 });
 
-router.get('/getCustId/:fbId', (req, res) => {
-    console.log(req.params.fbId)
-    let sql = `SELECT customerId, firstName FROM customers where facebookId = ${parseInt(req.params.fbId)}`;
+router.get('/getCustId/:fbId', auth,(req, res) => {
+
+    let sql = `SELECT customerId, firstName FROM customers where facebookId = ${parseIntauth,(req.params.fbId)}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
 
-router.put('/update',(req,res)=>{
+router.put('/update',auth,(req,res)=>{
     let sql = `Update customers SET ? where customerId= ${req.body.id.customerId}`
     let query = pool.query(sql, req.body.info ,(err, results) => {
         if(err) throw err;
         res.send(results);
     });
 })
-router.get('/allIdName', (req, res) => {
+router.get('/allIdName', auth,(req, res) => {
     let sql = 'SELECT customerId,firstName FROM customers';
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
+        res.send(results);
     });
 });
 module.exports =router

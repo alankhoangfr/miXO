@@ -4,9 +4,9 @@ env_variables:
   SQL_USER: "Akleg"
   SQL_PASSWORD: "alan123456"
   SQL_DATABASE: "officaldb"
-  INSTANCE_CONNECTION_NAME: "mixov2:asia-east1:mixov2db"
+  INSTANCE_CONNECTION_NAME: "mixodatabasesystem:us-central1:mixodatabase"
 beta_settings:
-  cloud_sql_instances: "mixov2:asia-east1:mixov2db"
+  cloud_sql_instances: "mixodatabasesystem:us-central1:mixodatabase"
 
 manual_scaling:
   instances: 1

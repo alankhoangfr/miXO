@@ -12,12 +12,7 @@ To go to production
 4. go to the gcloud sdk google shell and make sure you have logged in
 5. In the folder directory do gcloud app deploy
 
-To do
 
-- use ref for all input - look at cardItem.js 
--add in option to put in additional prices
--ONCE ADD ORDERS, CLEAR THE ITEMS
--ALSO ADD IN NAME AT THE TOP OF ORDER
 
 
 Also go to console

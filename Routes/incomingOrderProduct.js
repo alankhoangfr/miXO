@@ -1,23 +1,25 @@
 const express = require("express")
 const router = express.Router()
 const pool = require("../dbpool")
- 
+const auth = require('../middleware/auth')
 
-router.get('/all', (req, res) => {
+
+router.get('/all', auth,(req, res) => {
         let sql = `
         SELECT IOP.*,PP.productName, iorder.supplierOrderNumber,iorder.orderDate,VP.quantityInStock,VP.accumulation
         FROM incomingorderproducts  IOP 
         LEFT JOIN  incomingorders iorder ON IOP.idIncomingOrders=iorder.idIncomingOrders
         left Join variantproduct VP ON IOP.sku = VP.SKU 
         Left join parentproduct PP  on IOP.predictedParentId=PP.idParentProduct 
-        where not  iorder.status  ="Complete" `
+        where  
+        iorder.status="Pending" or iorder.paymentStatus <> "Completely Paid" or iorder.paymentStatus is null`
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);
     });
 });
 
-router.put('/statusComment', (req, res) => {
+router.put('/statusComment', auth,(req, res) => {
     console.log("update",req.body)
     const info = req.body
     let sql = 'UPDATE incomingorderproducts  SET ? WHERE ?'
@@ -30,7 +32,7 @@ router.put('/statusComment', (req, res) => {
     });     
 });
 
-router.post("/new", (req,res)=>{
+router.post("/new", auth,(req,res)=>{
     let info = req.body    
     if(req.files!==null){
         info["productImage"]=req.files.productImage.data    
@@ -46,7 +48,7 @@ router.post("/new", (req,res)=>{
 
 })
 
-router.post("/fromVP",(req,res)=>{
+router.post("/fromVP",auth,(req,res)=>{
     console.log(req.body)
     let info = req.body  
     let sql = `INSERT INTO incomingorderproducts (idIncomingOrders, predictedParentId, sku, wholeSalePrice, 
@@ -60,7 +62,7 @@ router.post("/fromVP",(req,res)=>{
       res.send(results)
     })
 })
-router.post("/fromPP",(req,res)=>{
+router.post("/fromPP",auth,(req,res)=>{
     let info = req.body  
     let sql = `INSERT INTO incomingorderproducts (idIncomingOrders, predictedParentId, sku, wholeSalePrice, 
     quantity, retailPrice, productDescription, category, subCategory, colour, size, productImage) 

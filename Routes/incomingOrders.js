@@ -1,8 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const pool = require("../dbpool")
+const auth = require('../middleware/auth')
 
-router.get('/all', (req, res) => {
+router.get('/all',auth, (req, res) => {
     let sql =
        `SELECT iord.* , sum(iop.quantity) as totalQuantity, sum(iop.statusQuantity) as totalStatusQuantity
         FROM incomingorders iord
@@ -19,7 +20,7 @@ router.get('/all', (req, res) => {
     });
 });
 
-router.put('/statusComment', (req, res) => {
+router.put('/statusComment',auth, (req, res) => {
     console.log("update",req.body)
     let sql = 'UPDATE incomingorders SET ? WHERE ?'
     let query = pool.query(sql, [{ "comment": req.body.comment,"status":req.body.status,"paymentStatus":req.body.paymentStatus,"payDate":req.body.payDate,
@@ -28,7 +29,7 @@ router.put('/statusComment', (req, res) => {
             res.send(results);
     });
 });
-router.post('/new', (req, res) => {
+router.post('/new',auth, (req, res) => {
     let sql = "INSERT INTO incomingorders set ?"
     let query = pool.query(sql, req.body ,(err, results) => {
         if(err) throw err;
