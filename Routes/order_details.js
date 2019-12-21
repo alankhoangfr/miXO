@@ -6,13 +6,18 @@ const auth = require('../middleware/auth')
 router.get('/all', auth,(req, res) => {
     let sql = 
     `
-    SELECT OD.* ,
+   select * 
+   from
+   (
+   SELECT OD.* ,
     VP.idParentProduct,PP.productName,PP.category,PP.subCategory,VP.size,VP.colour,VP.productImage,VP.quantityInStock,VP.wholeSalePrice
     FROM order_details OD 
     LEFT JOIN  orders ords ON OD.idOrders=ords.idOrders 
     left Join variantproduct VP ON OD.sku = VP.SKU 
     LEFT JOIN parentproduct PP ON VP.idParentProduct = PP.idParentProduct 
-    where not  ords.status  in ("Delivered",null)   `    
+    where not  ords.status  in ("Delivered") || ords.paymentStatus = "Partially Paid" || ords.paymentStatus is null 
+    ) as first
+    where first.quantity is not null  `    
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);

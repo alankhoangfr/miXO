@@ -10,8 +10,7 @@ const auth = require('../middleware/auth')
 
 
 router.post('/', auth,(req, res) => {
-  const { username, email, password } = req.body
-
+  const { username, email, password,access } = req.body
   // Simple validation
   if(!username || !email || !password) {
     return res.status(400).json({ msg: 'Please enter all fields' })
@@ -27,7 +26,8 @@ router.post('/', auth,(req, res) => {
 			const newUser = {
 				username,
 				email,
-				password
+				password,
+				access
 			}
 			bcrypt.genSalt(10, (err, salt) => {
 				bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -37,7 +37,6 @@ router.post('/', auth,(req, res) => {
 					let query = pool.query(sql1,newUser,(err,nUser)=>{
 						if(err) throw err;
 						let query = pool.query(sqlUsername,(err,user)=>{
-							console.log("user",user)
 							if(err) throw err;
 						})
 					})	

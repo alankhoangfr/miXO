@@ -59,6 +59,7 @@ router.post("/new",auth, (req,res)=>{
 
 router.post("/fromIncoming",auth,(req,res)=>{
     let info = req.body  
+    //console.log(info)
         let sql = `INSERT INTO variantproduct(sku, idParentProduct, size, colour, quantityInStock,
          productDescription, wholeSalePrice, priceAdjustment, dateCreated, productImage,accumulation)
          SELECT ${`"${info.sku}"`} , ${`"${info.idParentProduct}"`},iop.size, iop.colour, iop.statusQuantity ,iop.productDescription, 
@@ -69,6 +70,7 @@ router.post("/fromIncoming",auth,(req,res)=>{
          on vp.sku = ${`"${info.sku}"`}
          where iop.idIncomingOrderProducts = ${info.idIncomingOrderProducts}`
     let query = pool.query(sql,(err,results)=>{
+        //console.log(results,"asdfsadf")
       if(err) throw err
       res.send(results)
     })

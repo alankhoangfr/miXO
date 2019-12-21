@@ -6,17 +6,17 @@
 
   require('dotenv').config()
 
-/*
+
   //Local
-   
+   /*
   const pool = mysql.createPool({
     host: process.env.DB_HOST_LOCAL,
     user: process.env.DB_USER_LOCAL,
     database: process.env.DB_DATABASE_LOCAL,
     password: process.env.DB_PASS_LOCAL
   })
-*/
 
+*/
 /*
   //Google SQL
   const pool = mysql.createPool({
