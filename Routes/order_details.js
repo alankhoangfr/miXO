@@ -10,7 +10,8 @@ router.get('/all', auth,(req, res) => {
    from
    (
    SELECT OD.* ,
-    VP.idParentProduct,PP.productName,PP.category,PP.subCategory,VP.size,VP.colour,VP.productImage,VP.quantityInStock,VP.wholeSalePrice
+    VP.idParentProduct,PP.productName,PP.category,PP.subCategory,VP.size,VP.colour,VP.productImage,
+    VP.quantityInStock,VP.wholeSalePrice,VP.accumulation
     FROM order_details OD 
     LEFT JOIN  orders ords ON OD.idOrders=ords.idOrders 
     left Join variantproduct VP ON OD.sku = VP.SKU 

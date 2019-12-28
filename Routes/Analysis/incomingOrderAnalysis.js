@@ -13,7 +13,7 @@ router.get('/amountSummary', auth,(req, res) => {
 		 SELECT sum(paid) as amount, "Total Amount Paid" as status
 		 FROM incomingorders
 		 union
-		 SELECT avg(paid) as averageAmount, "Average Amount Paid per Order" as status
+		 SELECT Round(avg(paid),2) as averageAmount, "Average Amount Paid per Order" as status
 		FROM incomingorders;`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;

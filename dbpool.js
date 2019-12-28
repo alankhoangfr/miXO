@@ -8,7 +8,7 @@
 
 
   //Local
-   /*
+   
   const pool = mysql.createPool({
     host: process.env.DB_HOST_LOCAL,
     user: process.env.DB_USER_LOCAL,
@@ -16,7 +16,7 @@
     password: process.env.DB_PASS_LOCAL
   })
 
-*/
+
 /*
   //Google SQL
   const pool = mysql.createPool({
@@ -26,7 +26,9 @@
     password: process.env.DB_PASS
   });
   */
-/*
+
+
+
   //Development
 
   pool.getConnection((err, connection) => {
@@ -47,9 +49,10 @@
   	return
   })
   //
-*/
 
-  
+
+
+  /*
   //for production
   var config = {
       user: process.env.SQL_USER,
@@ -73,7 +76,8 @@
   });
   
 
-  //
 
+  //
+*/
 
   module.exports = pool

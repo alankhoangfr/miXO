@@ -21,7 +21,8 @@ router.get('/all',auth, (req, res) => {
 router.put('/update',auth, (req, res) => {
 	console.log("update",req.body)
     let sql = `UPDATE variantproduct SET ? WHERE sku= ${`"${req.body.sku}"`}`
-    let query = pool.query(sql, {quantityInStock:req.body.quantityInStock},(err, results) => {
+    let query = pool.query(sql, {quantityInStock:req.body.quantityInStock,accumulation:req.body.accumulation,
+        wholeSalePrice:req.body.wholeSalePrice},(err, results) => {
         if(err) throw err;
         res.send(results);
     });

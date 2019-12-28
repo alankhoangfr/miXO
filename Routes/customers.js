@@ -25,7 +25,7 @@ router.get('/customerId', auth,(req, res) => {
     });
 });
 router.post('/new', auth,(req, res) => {
-	console.logauth,(req.body)
+	console.log(req.body)
     let sql = "INSERT INTO customers set ?"
     let query = pool.query(sql, req.body ,(err, results) => {
         if(err) throw err;
@@ -43,7 +43,7 @@ router.get('/fbcust', auth,(req, res) => {
 
 router.get('/getCustId/:fbId', auth,(req, res) => {
 
-    let sql = `SELECT customerId, firstName FROM customers where facebookId = ${parseIntauth,(req.params.fbId)}`;
+    let sql = `SELECT customerId, firstName FROM customers where facebookId = ${parseInt(req.params.fbId)}`;
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results);

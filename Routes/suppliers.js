@@ -19,7 +19,7 @@ router.get('/allIdName', auth,(req, res) => {
     });
 });
 
-router.post('/new', (req, res) => {
+router.post('/new', auth,(req, res) => {
 
     let sql = "INSERT INTO suppliers set ?"
     let query = pool.query(sql, req.body ,(err, results) => {

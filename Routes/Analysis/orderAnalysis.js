@@ -7,18 +7,18 @@ const auth = require('../../middleware/auth')
 
 router.get('/amountSummary', auth,(req, res) => {
     let sql = `
+        select sum(paid) as amount,paymentStatus as status
+        from orders
+        where paymentStatus="Completely Paid"
+        group by paymentStatus
+        union
         select sum(IFNULL(totalPriceSold,0)-IFNULL(reduction,0)+IFNULL(deliveryPrice,0)-IFNULL(paid,0)) as amount,
         IFNULL(paymentStatus,"Not Paid") as status
         from orders
         where not paymentStatus = "Completely Paid" or paymentStatus is null
         group by paymentStatus
         union
-        select sum(paid) as amount,paymentStatus as status
-        from orders
-        where paymentStatus="Completely Paid"
-        group by paymentStatus
-        union
-        select avg(paid) as amount,"Average Payment" as status
+        select Round(avg(paid),2) as amount,"Average Payment" as status
         from orders
         where paymentStatus="Completely Paid"
         group by paymentStatus;`;
@@ -40,7 +40,7 @@ router.get('/quantitySummary', auth,(req, res) => {
         where deliveryDate is null and not status = "Cancelled"
         group by deliveryDate
         union
-        select sum(quantity) count,"Total Quantity Ordered"
+        select sum(quantity) count,"Total Items Ordered"
         from order_details 
         ;
     `;

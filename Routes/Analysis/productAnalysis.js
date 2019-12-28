@@ -6,16 +6,13 @@ const auth = require('../../middleware/auth')
 
 router.get('/quantitySummary', auth,(req, res) => {
     let sql = `
-    select count(*) as count, "Number of Product Models" as status
+    select count(*) as count, "Number of Brands" as status
 	from parentproduct
 	union
-	select count(*) as count, "Number of Model Vairations" as status
+	select count(*) as count, "Number of Models" as status
 	from variantproduct
 	union
-	select sum(accumulation) as count, "Total quantity ordered in lifetime" as status
-	from variantproduct
-	union
-	select sum(quantityInStock) as count, "Total quantity in Stock" as status
+	select sum(quantityInStock) as count, "Models in Stock" as status
 	from variantproduct;`
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
@@ -98,7 +95,10 @@ router.get('/shelfLife/orders', auth,(req, res) => {
 
 router.get('/shelfLife/incoming', auth,(req, res) => {
     let sql = `
-			SELECT vppp.productName,vppp.idParentProduct, iod.payDate as date,sum(iop.quantity) as quantity
+			select * 
+            from
+            (
+            SELECT vppp.productName,vppp.idParentProduct, iod.payDate as date,sum(iop.quantity) as quantity
 			FROM  incomingorderproducts iop
 			left join incomingorders iod
 			on iod.idIncomingOrders=iop.idIncomingOrders
@@ -108,9 +108,28 @@ router.get('/shelfLife/incoming', auth,(req, res) => {
 			left join parentproduct pp
 			on pp.idParentProduct=vp.idParentProduct) as vppp
 			on CONCAT(vppp.productName,"-",vppp.size,"-",vppp.colour)=iop.sku
+            where vppp.productName is not null
 			group by vppp.productName,vppp.idParentProduct, iod.payDate
-			order by payDate;
-		;`
+			order by payDate
+            ) original
+            union
+            select * 
+            from
+            (
+			SELECT vppp.productName,vppp.idParentProduct, iod.payDate as date,sum(iop.quantity) as quantity
+			FROM  incomingorderproducts iop
+			left join incomingorders iod
+			on iod.idIncomingOrders=iop.idIncomingOrders
+			left join 
+            (select pp.idParentProduct,pp.productName, vp.colour,vp.size,vp.sku
+			from variantproduct vp
+			left join parentproduct pp
+			on pp.idParentProduct=vp.idParentProduct) as vppp
+			on vppp.sku=iop.sku
+            where productName is not null
+			group by vppp.productName,vppp.idParentProduct, iod.payDate
+			order by payDate
+            ) older;`
     let query = pool.query(sql, (err, results) => {
         if(err) throw err;
         res.send(results)
