@@ -135,5 +135,615 @@ router.get('/shelfLife/incoming', auth,(req, res) => {
         res.send(results)
     });
 });	
+//Daily
 
+router.get('/selectProduct/size/daily', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,size as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select (ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.size,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, size
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/colour/daily', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,colour as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select (ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.colour,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, colour
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/overall/daily', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+     	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,null as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select (ords.orderDate) as period, pp.idParentProduct,pp.productName,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, factor
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+
+//weekly
+router.get('/selectProduct/size/wk', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+		select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,size as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select week(ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.size,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, size
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/colour/wk', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+		select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,colour as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select week(ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.colour,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, colour
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/overall/wk', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,null as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select week(ords.orderDate) as period, pp.idParentProduct,pp.productName,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName,factor
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+//Monthly 
+router.get('/selectProduct/size/mth', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,size as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(month(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName, vp.size,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, size
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/colour/mth', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,colour as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(month(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName, vp.colour,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, colour
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/overall/mth', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+     	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,null as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(month(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, factor
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+
+//Quarterly
+
+router.get('/selectProduct/size/qrt', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,size as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(quarter(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName, vp.size,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, size
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/colour/qrt', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,colour as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(quarter(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName, vp.colour,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, colour
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/overall/qrt', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+     	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,null as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select concat(quarter(ords.orderDate),year(ords.orderDate)) as period, pp.idParentProduct,pp.productName,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, factor
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+
+//Yearly
+
+router.get('/selectProduct/size/yr', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,size as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select year(ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.size,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, size
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/colour/yr', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+    	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,colour as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select year(ords.orderDate) as period, pp.idParentProduct,pp.productName, vp.colour,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, colour
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
+router.get('/selectProduct/overall/yr', auth,(req, res) => {
+	const info = req.query
+    let sql = `
+     	select groupanalysis.*
+		,totalProfit/groupanalysis.quantity as avgProfit,
+		totalRevenue/groupanalysis.quantity as avgRevenue, totalDelivery/groupanalysis.quantity as avgDelivery
+		from
+		(
+		select period,idParentProduct,productName,null as factor,sum(quantity) quantity,sum(netProfit) as totalProfit,
+		sum(revenue) as totalRevenue, sum(deliveryPrice) as totalDelivery
+			from(
+				select year(ords.orderDate) as period, pp.idParentProduct,pp.productName,
+				(ordd.quantity) as quantity,
+				((ifnull(ords.paid,0)-ifnull(ords.deliveryPrice,0))/ordQ.quantityInOrder-vp.wholeSalePrice) as netProfit,
+				(ifnull(ords.paid,0)/ordQ.quantityInOrder) as revenue,
+				(ifnull(ords.deliveryPrice,0)/ordQ.quantityInOrder) as deliveryPrice
+				from order_details ordd
+				left join orders ords
+				on ordd.idOrders = ords.idOrders
+				left join (
+				select idOrders,sum(quantity) quantityInOrder
+				from order_details ordd
+				group by idOrders
+				having sum(quantity) is not null)  as ordQ
+				on ordQ.idOrders =ordd.idOrders
+				left join variantproduct vp
+				on vp.sku = ordd.sku
+				left join parentproduct pp
+				on pp.idParentProduct=vp.idParentProduct
+				where quantity is not null and ords.paymentStatus = "Completely Paid" and
+				ords.orderDate BETWEEN CAST(${`"${info.start}"`}  AS DATE) AND CAST(${`"${info.end}"`}  AS DATE)
+			) as analysis
+		group by period, idParentProduct, productName, factor
+		) as groupanalysis
+		order by period;`
+    let query = pool.query(sql, (err, results) => {
+        if(err) throw err;
+        res.send(results)
+    });
+});	
 module.exports =router
